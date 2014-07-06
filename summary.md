@@ -178,7 +178,8 @@
             	Loop Invariant:
                 	min(left,right) <= target <= max(left,right)
                 
-                	一般情况下都是 left<=target<=right，最后跳出的时候 left>right，target					依然在这个范围内， 应该取其右边的界作为插入点
+                	一般情况下都是 left<=target<=right，最后跳出的时候 left>right，而且， left=right+1， target依然在这个范围内， 应该取其右边的界作为插入点。 
+                	要证明left=right+1 ， 就必须证明倒数第二步 left==right, 这可以用折半查找的原理解释，每一次查找范围都是原来的一半范围越来越小，最后就变成1了。
             	*/
 	           idx = left;
 	        }
@@ -384,11 +385,51 @@ BFS但是要求从最后一个level开始输出，从左往右， 目前有两�
 	比如所有的 i-1个元素得到的 permutation， 在每一个permutation的每一个可以插入的位置插入第i个元素，就得到了 i个元素的permutation
 
 ##Minimum Path Sum	
-简单版的最短路问题， 限制只能左上到右下
+简单版的最短路问题， 限制只能左上到右下, 很类似于机器人走路的那个 Unique Paths
+递推公式：
+	
+	minSum[i][j] = min(minSum[i-1][j],minSum[i][j-1])+A[i][j]
+
+####扩展：
+
+《待字闺中》收集苹果
+
+1. 从左上到右下，如何拿到最多苹果
+和之前一样，简单DP
+
+2. 从左上到右下，再返回左上，如何拿到最多苹果
+//todo
+
+3. 两次从左上到右下， 如何拿到最多苹果
+	三维DP
+	比如 dp[4，1，2] 表示走了四步， 目前在第一行， 可能由如下几种转换而来
+		dp[3,0,1]
+		dp[3,0,2]
+		dp[3,1,1]
+		dp[3,1,2]
+		
+		递推公式：
+		dp[n][i][j] 代表走了n步，第一次走的在第i行（开始在第0行），说明往下走了 i 步， 往右走了n-i步，第一次现在在 A[i][n-i]处， 同理，第二次在 A[j][n-j]处。
+		dp[n][i][j] =  max(①dp[n-1][i-1][j-1],
+							②dp[n-1][i-1][j],
+							③dp[n-1][i][j-1],
+							④dp[n-1][i][j])
+						+ 
+						A[i][n-i]
+						+
+						A[j][n-j];
+		
+					
 
 
+##Search a 2D Matrix
+搜索一个从左到右 从上到下都已经排序好的2d matrix
+1. 可以先将matrix按行展开， 然后再使用普通的二分查找
+2. 先在第一列进行二分查找，而后在找到的行中进行二分查找
+	
+		具体讨论参看 Insert Position 问题
 
-##Search a 2D Matrix	
+
 ##Container With Most Water	
 ##Linked List Cycle II	
 ##Binary Tree Level Order Traversal	
