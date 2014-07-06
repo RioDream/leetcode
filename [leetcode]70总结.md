@@ -21,9 +21,7 @@ Single Number II可以泛化为别的， 比如 任意n个duplicates。
 3. 熟悉了 & | ^(异或) 这些逻辑运算符
 
 ##Reverse Integer
-反转整数，基本思想是如何获得整数的每一位。
-比较好的做法是， 将x不断右移 (/10)，移出来的数(%10)放到,y的末尾（+），然后y左移(*10)。
-
+
 ##Palindrome Number 
 	//判断回文 如 12321
     while(t>0){
