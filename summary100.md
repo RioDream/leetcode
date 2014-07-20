@@ -826,6 +826,7 @@ DFS和BFS都可以
 思路： 一个指针从前往后遍历，遇到一个元素，决定要不要往子集里面加。
 子集一共有 2^n 个， n是元素个数
 
+
 	class Solution {
 	public:
 	    vector<vector<int> > subsets(vector<int> &S) {
@@ -1018,29 +1019,314 @@ DFS和BFS都可以
 		        return range;
 		    }
 		};
-	
+
+
+不管是 
+Search Insert Position 
+还是
+Search Range
+
+采用的二分查找法， 最后都有 
+
+	A[left]>target
+	A[right]<target
+
+而且 left=right+1
+
+这个结论还有待证明， 还需要查阅一些资料。
+
+
+比如， insert position的时候， left正好指向第一个比target大的元素，所以就应该是插入位置。 
+
+search range 的时候， 分为两个阶段
+找左边界的时候， left正好指向左边界， right指向left的左边  
+找右边界的时候， right正好指向右边界，left指向right的右边
 
 
 
 总结， 学会举反例也是一种本事。
 
-##3Sum Closest    
+##3Sum Closest   
+基本思路： 线性的2Sum问题的修改版 + combination问题
+
+1. 一个不是很好的版本
+	
+		class Solution {
+		public:
+		    //这个方法不如使用minGap， 因为这里的twoSumClosest函数返回的是 twoSum, 想要进行 minThreeSum的更新， 还要将 twoSum 加成 threeSum, 然后还面临如何选取 minThreeSum初值的问题（这里选择的是INT_MAX， 其实可以选择前三个数的和）
+		    int threeSumClosest(vector<int> &num, int target) {
+		        sort(num.begin(),num.end());
+		        
+		        int minThreeSum = INT_MAX; //不够鲁邦
+		        //int minThreeSum = num[0]+num[1]+num[2]; 更好
+		        
+		        for(int i=0;i<num.size()-2;i++){
+		            int twoSum = twoSumClosest(num,target-num[i],i+1,num.size()-1);
+		            int threeSum = twoSum+num[i];
+		            
+		            if(threeSum==target){
+		                return target;
+		            }
+		            
+		            //注意，如果这里只比较abs(minThreeSum-target)， 当target为-1的时候会溢出，注意INT_MAX这种情况
+		            //!其实这里使用 INT_MAX来进行判断是不是第一次。 不是特别靠谱， 因为更新过一次 minThreeSum 之后，minThreeSum的值还是有可能变成INT_MAX， 比如 target=INT_MAX的时候就很有可能
+		            if(minThreeSum==INT_MAX || abs(threeSum-target)<abs(minThreeSum-target)) minThreeSum=threeSum;
+		        }
+		        return minThreeSum;
+		    }
+		    
+		private:
+		    //修改的twoSum
+		    int twoSumClosest(const vector<int> &num, int target, int fromIdx, int toIdx){
+				vector<int> closestTwoSum(2);
+		        int lastDiff = INT_MAX; //上一次距离target的差距
+				int left = fromIdx;
+				int right = toIdx;
+				int minDiff = INT_MAX;
+				while (left < right){ //不能等于，否则可能会重复
+				    int diff = num[left] + num[right] - target;
+				    
+				    if(lastDiff==INT_MAX) lastDiff=diff;
+				    if(minDiff==INT_MAX) minDiff=diff;
+				    
+				    //如果使用这个， 会造成错误， 即使sum变号，也不能说明最接近target的在附近，比如
+				    // [4 8 16 32 64 128],80  4+128->4+64 diff变号了，但是left+2 之后 16+64=80 更接近
+				    //if(diff==0 || lastDiff<0&&diff>0 || lastDiff>0&&diff<0){
+				    //  if(abs(lastDiff)<abs(diff)){
+				    //          return target+lastDiff;
+				    //  }else{
+				    //        return target+diff;
+				    //  }
+				    //}
+				    if(diff==0){
+				        return target; //等于，由题设，只有一对最小，所以直接退出
+				    }else if (diff>0){
+						right--;
+					}else if (diff<0){
+						left++;
+					}
+					
+					//更新绝对值最小的diff
+					if(abs(diff)<abs(minDiff)){
+					    minDiff = diff;
+					}
+					
+					//update last
+					lastDiff=diff;
+				}
+				
+				//不如直接返回 minDiff， twoSum的diff， 就是threeSum的diff
+				return target+minDiff;
+			}
+		};
+
+2. 相对来说有改进的的版本
+
+		class Solution {
+		public:
+		    //采用 类似于 combination + 修改过的2sum 的方法， 时间复杂度是 O(n^2)
+		    
+		    int threeSumClosest(vector<int> &num, int target) {
+		        if(num.size()<3) return INT_MIN;
+		        
+		        //别忘记排序
+		        sort(num.begin(),num.end());
+		        
+		        int sum;
+		        
+		        //minGap 是距离target最近的距离， 定义为 target-tempSum 
+		        int minGap = INT_MAX;
+		        //整个组合数 同 combination数
+		        for(int i=0;i<num.size()-2;i++){ //注意终止点， 一定要留两个(不包括i， 也就是说i最多等于n-3, 后面是 n-2 n-1)
+		            int minGapTemp = INT_MAX;
+		            twoSumClosest(num,target-num[i],i+1,minGapTemp);
+		            if(abs(minGapTemp)<abs(minGap)){
+		                minGap = minGapTemp;
+		            }
+		        }
+		        
+		        sum = target-minGap;
+		        return sum;
+		    }
+		    
+		private:
+		    
+		    void twoSumClosest(vector<int>& num, int target, int from, int& minGap){
+		        int left = from;
+		        int right = num.size()-1;
+		        
+		        while(left<right){
+		            
+		            int tempSum = num[left]+num[right];
+		            if(abs(target-tempSum)< abs(minGap)){
+		                minGap = target-tempSum;
+		            }
+		            
+		            if(tempSum > target){
+		                right--;
+		            }else if(tempSum < target){
+		                left++;
+		            }else{
+		                //此时 minGap=0 ，不用再找
+		                return;
+		            }
+		            
+		            
+		        }
+		        
+		    }
+		    
+		};
+
+
 ##Convert Sorted List to Binary Search Tree    
+
+	
+
 ##Unique Binary Search Trees II    
+
 ##Count and Say    
+
 ##Triangle    
+
 ##Subsets II    
+
 ##Binary Tree Zigzag Level Order Traversal    
+
 ##Partition List    
+
 ##Combination Sum    
+
 ##Construct Binary Tree from Inorder and Postorder Traversal    
+
 ##Letter Combinations of a Phone Number    
+
 ##Pow(x, n)    
+思路：
+最naive的思路就是一个while，乘n次， 复杂度是 O(n) 。 这种方法每次都乘以一个x，  向目标逼近的太慢。
+可以利用中间结果，同时加快逼近速度。
+比如 x的5次方
+naive解法：
+x5 = x4*x = x3*x*x = x2*x*x*x = x*x*x*x*x;
+依赖树： x5 - x4 - x3-x2-x1
+折半：
+x5 = x2*x2*x = (x*x)*(x*x)*x,  这样下来，算出的x2就可以复用。
+依赖树： x5-x2-x1
+幅度变成了O(logN)
+
+1. 	递归版本
+	注意对n=-2147483648的特殊处理
+	
+		class Solution {
+		public:
+		    double pow(double x, int n) {
+		        
+		        //处理 x=-1.0 n=-2147483648这种边界情况。
+		        /*
+		        int n = -2147483648;
+		        int m = -1*n;
+		        m还是等于-2147483648
+		        为什么???
+		        */
+		        if(x==1.0) return x;
+		        if(x==-1.0){
+		            if(n%2==0) return 1.0;
+		            else return -1.0;
+		        }
+		        
+		        if(n<0){
+		            n = -n;
+		            return 1/powHelper(x,n);
+		        }else{
+		            return powHelper(x,n);
+		        }
+		    }
+		    
+		private:
+		    double powHelper(double x,int n){
+		        //递归出口
+		    	if(n==0) return 1.0;
+		    
+		    	if(n%2==0){ //偶数
+		    		return powHelper(x*x,n/2);	
+		    	}else{
+		    		return x*powHelper(x*x,(n-1)/2);
+		    	}
+		    }
+
+		    
+		};
+
+2. 	迭代版本
+	这里不知道为什么就没有n的正负号的问题了???
+
+	class Solution {
+	public:
+	//迭代版本 ， 使用栈
+	double pow(double x,int n){
+	    int raw_n = n;
+		stack<int> re; //stack里面保存着每次除法的余数
+		while(n!=0){
+			if(n%2==0){ //使用 n&1会出错???
+				re.push(0);
+			}else{
+				re.push(1);
+			}
+
+			n = n/2;
+		}
+
+		/*
+		如果是 pow(x，5)
+
+
+		stack里面的是：
+		从 5得到0 一共经历了三步（包括5四个结果）：
+		1
+		0
+		1
+		*/
+
+		double res = 1.0; //注意要从1开始， 因为上一步的时候n是最后除到0的， 也就是x的0次方
+		/*如果上一步n除到1（这是必然的，因为n最后必然等于0， 0之前一步必然是1） 就可以令res等于x
+		那时候的stack里面应该是这样：
+		0
+		1
+		同样可以得到结果
+		*/
+
+		while(!re.empty()){
+			int r = re.top();
+			re.pop();
+			if(r){
+				res = res*res*x;
+			}else{
+				res = res*res;
+			}
+
+		}
+		
+		if(raw_n<0) res = 1.0/res;
+
+		return res;
+
+	}
+	};
+
+
 ##Construct Binary Tree from Preorder and Inorder Traversal    
 ##Reverse Linked List II    
-##Palindrome Partitioning    
+##Palindrome Partitioning  
+
+
+
+
+
 ##Add Binary    
-##N-Queens    
+##N-Queens   
+N后问题， 回溯法的经典使用案例
+
+
 ##Validate Binary Search Tree    
 ##Next Permutation    
 ##Edit Distance    
@@ -1052,6 +1338,8 @@ DFS和BFS都可以
 ##Distinct Subsequences    
 ##Combination Sum II    
 ##Jump Game II    
+
+
 ##ZigZag Conversion    
 ##Anagrams    
 ##Recover Binary Search Tree    
@@ -1072,8 +1360,192 @@ DFS和BFS都可以
 ##4Sum    
 ##Largest Rectangle in Histogram    
 ##Sudoku Solver    
-##Longest Palindromic Substring    
+##Longest Palindromic Substring  
+
+思路：
+中心扩展法， 注意可以从两个元素开始扩展， 这样就包含了奇数和偶数的情况，
+这种方法相对来说比较容易， 时间复杂度是 O(n^2)
+
+1. 	中心扩展法版本一
+
+		class Solution {
+		public:
+		    //中心扩展法
+		    string longestPalindrome(string s) {
+		        int longestLength = 0;
+		        int region[2] = {0,0};
+		        for(int i=0;i<s.size();i++){
+		            //中心为i
+		            int len = expandFromCenter(s,i,i);
+		            if(len>longestLength){
+		                longestLength=len;
+		                region[0] = i - len/2;
+		                region[1] = i + len/2;
+		            }
+		            
+		            //中心在 i i+1之间
+		            if(i!=s.size()-1){
+		                int len = expandFromCenter(s,i,i+1);
+		                if(len>longestLength){
+		                    longestLength=len;
+		                    region[0] = i - (len/2 - 1);
+		                    region[1] = i+1 + (len/2 - 1);
+		                }
+		            }
+		        }
+		        return s.substr(region[0],region[1]-region[0]+1); //注意substr的用法
+		    }
+
+		private:
+		    //注意扩展的时候中心可以在一个元素上， 也可以在两个元素中间， 对应改子串是奇数和偶数的情况
+		    int expandFromCenter(string str, int center_l, int center_r){
+		        int l = center_l;
+		        int r = center_r;
+		        
+		        int len;
+		        if(l==r) len=-1; //奇数, 不必担心，奇数一定会在while中 +2
+		        else len=0; //偶数
+		        
+		        while(str[l]==str[r] && l>=0 && r<str.size()){ //避免越界
+		            l--;
+		            r++;
+		            len += 2;
+		        }
+		        return len;
+		    }
+		};
+
+2. 	中心扩展法版本二
+		
+		class Solution {
+		public:
+		    string longestPalindrome(string s) {
+		        const int N = s.size();
+		        
+		        int max_pali_len = -1;
+		        int max_pali_left = -1;
+		        int max_pali_right = -1;
+		        
+		        for(int i=0;i<N;i++){
+		            int l1=i;
+		            int r1=i;
+		            int l2=-1;
+		            int r2=-1;
+		        	int pali_len1 = expandFromCenter(l1,r1,s,N);
+		        	int pali_len2 = -1;
+		        	if(i!=N-1){
+		        	    l2 = i;
+		        	    r2 = i+1;
+		        		pali_len2 = expandFromCenter(l2,r2,s,N);
+		        	}
+		        
+		            //update max_len 、left and right
+		            //如果把len， left和right封装成为一个类， 结果会比较简洁
+		            int pali_len = -1;
+		            int l,r;
+		        	if(pali_len1 > pali_len2){
+		                pali_len = pali_len1;
+		                l = l1;
+		                r = r1;
+		        	}else{
+		        	    pali_len = pali_len2;
+		                l = l2;
+		                r = r2;
+		        	}
+		        	if(pali_len>max_pali_len){
+		        	    max_pali_len = pali_len;
+		        	    max_pali_left = l;
+		        	    max_pali_right = r;
+		        	}
+		        	
+		        }
+		        
+		        return s.substr(max_pali_left,max_pali_len);
+		    }
+
+		private:
+
+		    int expandFromCenter(int& l, int& r, const string S,const int N){
+		    	int pali_len=0;
+		    
+		    	while(l>=0 && r<N){
+		    		if(S[l]==S[r]){
+		    			pali_len = r-l+1;
+		    		}else{
+		    			break;
+		    		}
+		    
+		    		l--;
+		    		r++;
+		    	}
+		    	
+		    	//注意！！！把 l和r变回去
+		    	//这一步不放在上面 while处的break处， break的时候是因为 S[l]!=S[r]这个时候需要这一步操作，同时如果是因为没有满足while的条件而推出，得到的比如 l<0了， 同样要进行这一步操作
+		    	l++;
+		    	r--;
+		    
+		    	return pali_len;
+		    }
+		};
+
+		
+
 ##Word Break    
+
+DP
+
+下一次i的循环，就可以踩着第一步走过的脚印往前
+
+	class Solution {
+	public:
+	    bool wordBreak(string s, unordered_set<string> &dict) {
+	        const int n = s.size();
+	        vector<bool> dp(n+1,false);
+	        dp[0] = true;
+	        
+	        //i代表第几个字符
+	        for(int i=1;i<=n;i++){ //i是起始点
+	            int idx = i-1; //第i个字符的idx
+	            if(dp[idx]){ //如果第idx个字符（也就是第i-1个字符）可以到达， 就往下推
+	                for(int j=idx;j<n;j++){
+	                    //以第idx个字符开始，到s中index为j结束的字串，是不是在dict中， 如果是， 就能将dp[j+1]=true， 因为index为j的字符是第j+1个字符
+	                    string subStr = s.substr(idx,j-idx+1);//注意 substr函数的用法
+	                    if(dict.count(subStr)>0){ //in dict 
+	                        dp[j+1] = true;
+	                    }
+	                }
+	                
+	                //以idx等于0的时候为例， 如果经过这个for循环, dp[j]=true说明 [0,j-1]这个字串在dict中，
+	                //如果 dp[j]=false 说明 [0,j-1]的字串不在 dict 中， 但是不能说明j-1就不可以到达。只不过不能一步到达
+	                
+	            }
+	        }   
+	        return dp[n];
+	    }
+	};
+
+稍加变形
+
+	class Solution {
+
+	public:
+	    bool wordBreak(string s, unordered_set<string> &dict) {
+	        // Note: The Solution object is instantiated only once and is reused by each test case.
+	        int n = (int)s.size();
+	        vector<bool> dp(n + 1, false);
+	        dp[0] = true;
+	        for (int i = 0; i < n; i++) {
+	            if (dp[i]) {
+	                for (int len = 1; i + len - 1 < n; len++) {
+	                    if (dict.count(s.substr(i, len)) > 0)
+	                        dp[i + len] = true;
+	                }
+	            }
+	        }
+	        return dp[n];
+	    }
+	};
+
 ##Merge Intervals    
 ##Spiral Matrix    
 ##Multiply Strings    
@@ -1089,14 +1561,166 @@ DFS和BFS都可以
 ##Longest Valid Parentheses    
 ##Interleaving String    
 ##Candy    
+思路： 
+这是一个局部约束问题（自己起的名字）， 对于每个小孩而言， 只要满足局部约束就可以
+这里的意思就是每个小孩和左右两边比，能够满足约束就可以。
+
+1. 先满足左边
+2. 再满足右边， 并且确定在满足右边约束的过程中，左边没有受影响。
+
+
+
+
 ##Two Sum    
+
+
+
 ##Palindrome Partitioning II    
 ##Minimum Window Substring    
 ##Substring with Concatenation of All Words    
 ##Word Ladder    
 ##Median of Two Sorted Arrays    
 ##3Sum    
-##Divide Two Integers    
+##Divide Two Integers  
+
+思路：
+
+x/y = N
+
+目的就是找到一个数N,使得:
+
+	y*N     >= x
+	y*(N-1)  < x
+
+问题就是要如何试出来这个N?
+ 
+ 1. 最naive的方法：
+ 	使用加法或者减法一个一个地试。
+ 	尝试顺序是 1 2 3 4 5 。。。。N
+
+ 2. 得寸进尺法：
+ 	尝试顺序是 1 2 4 8 。。。M(M>n) 1 2 4 ... L(L>n) 1 2 ... N
+
+		class Solution {
+		public:
+		    int divide(int dividend, int divisor) {
+		        
+		        //除数不等于0
+		        assert(divisor != 0);
+		        
+		        int count = 0, result = 0;
+		        
+		        //判断最后结果是不是负数
+		        bool isNeg = false;
+		        if((dividend<0 && divisor>0)||(dividend>0 && divisor<0))
+		            isNeg = true;
+		            
+		        
+		        unsigned int tDividend = abs(dividend);
+		        const unsigned int tDivisor = abs(divisor);
+		        unsigned int sum = 0;
+		        
+		        //这里不能加上 = 号， 会造成死循环
+		        while(tDividend > tDivisor)
+		        {
+		            count = 1;
+		            
+		            //sum是 Divisor的 1 2 4 8 ... 倍
+		            sum = tDivisor;
+		            
+		            //如果 sum*2 如果小于被除数， 就一直乘以2，直到大于等于被除数为止
+		            /*
+		            用一个例子来解释：
+		            Dend = 10 
+		            Dor = 3
+		            sum = 3
+		            count = 1
+		            
+		            sum = sum*2 //sum=6 < 10
+		            count = count*2 //2
+		            sum = sum*2 //sum=12 > 10
+		            
+		            Dend -= sum/2 //4  剩下的继续从头开始
+		            
+		            result += count //2
+		            */
+		            while((sum<<=1) < tDividend)
+		            {
+		                //count*2
+		                count<<=1;
+		            }
+		            
+		            //将被除数减去 sum/2
+		            tDividend -= (sum>>=1);
+		            
+		            result += count;
+		        }
+		        
+		        //最后
+		        if(tDivisor == tDividend)
+		            result++;
+		        return isNeg ?  -result : result;
+		    }
+		};
+
+3. 自己写的得寸进尺法 （TLE）
+
+		class Solution {
+		public:
+		    int divide(int dividend, int divisor) {
+		        bool isNeg = false;
+		        if ((dividend>0&&divisor<0) || (dividend<0&&divisor>0))
+		            isNeg = true;
+		        dividend = abs(dividend);
+		        divisor= abs(divisor);
+		        
+		        //处理特殊情况
+		        if(dividend<divisor) return 0;
+		        if(dividend==divisor){
+		            if(isNeg) return 1;
+		            else return -1;
+		        }
+		        
+		        
+		        int res = multi(divisor,dividend,0); 
+		        
+		        //符号矫正
+		        if(isNeg){
+		            res = -res;
+		        }
+		        return res;
+		    }
+		    
+		private:
+		    // x/y //已知除数比N大，往后找
+		    int multi(const int y,const int x,int N){
+		    	int temp = y*N;
+		    	int add = y;
+		    	int count = 1;
+		    	
+		    	int last_N=N;
+		    
+		        //得寸进尺地增加y， 直到超出x
+		    	//at least once
+		    	while(temp<=x){
+		    		
+		    		temp += add;
+		    		last_N = N;
+		    		N = N + count;
+		    		
+		    		add = add<<1;
+		    		count = count<<1;
+		    	}
+		    
+		    	if((temp-y)<=x){ 
+		    		return N-1;
+		    	}else{ 
+		    		return multi(y,x,last_N);
+		    	}
+		    
+		    }
+		};
+
 ##Word Break II    
 ##Decode Ways    
 ##String to Integer (atoi)    

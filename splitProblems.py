@@ -22,7 +22,7 @@ with open(summaryFile,"r") as fs:
 		if line.startswith("##") and line[2]!="#":
 			if f!=None:
 				f.close()
-			problemName = line[2:]
+			problemName = line[2:].strip()
 			print problemName
 			f = open(new_path+"/"+problemName+".md","wa")
 		if f:
