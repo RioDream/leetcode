@@ -13,7 +13,7 @@
 3. 再次扫描， 按照这一位是0 还是 1，将所有数字分成两组
 4. 两组分别异或得到x和y， 或者先异或一组得到 x，然后y=x^z
 
-如何得到一个int的所有bit ? 将int不断往右移然后 &1，或者将1不断左移 & int
+如何得到一个int的所有bit ? 将int不断往右移然后 &1，或者将1不断左移 & 这个int
 
 
 ####3. 一堆n个相同的数里面找一个落单的
@@ -26,12 +26,14 @@
 
 
 ##Maximum Depth of Binary Tree
-####1. 递归左右子树，
+
+####1. 直接递归
+1. 递归左右子树，
    
-    int maxDepth(TreeNode *root) {
-        if(!root) return 0;
-        return max(maxDepth(root->left), maxDepth(root->right))+1;
-    }
+	    int maxDepth(TreeNode *root) {
+	        if(!root) return 0;
+	        return max(maxDepth(root->left), maxDepth(root->right))+1;
+	    }
 
 ####2. 遍历
 1.  DFS
@@ -49,6 +51,7 @@
             DFS(root->left,level,maxLevel);
             DFS(root->right,level,maxLevel);
         }
+
 2. BFS 同样可以
 
         //to do
@@ -74,6 +77,7 @@
 
 
 ##Reverse Integer    
+
 反转整数，基本思想是如何获得整数的每一位。
 比较好的做法是， 将x不断右移 (/10)，移出来的数(%10)放到,y的末尾（+），然后y左移(*10)。
 
@@ -128,23 +132,133 @@
 更改链表的值来做标记，会破坏数据。
 
 1. 自我指向法， 也会破坏结构
+
 2. 快慢指针法
-    walker和runner一定会相遇。
+    walker和runner一定会相遇。一旦相遇就 return true
 
 
 ##Binary Tree Preorder Traversal
 1. 递归
+
+		class Solution {
+		public:
+		    vector<int> preorderTraversal(TreeNode *root) {
+		        if(!root) return output;
+		        
+		        output.push_back(root->val);
+		        
+		        preorderTraversal(root->left);
+		        preorderTraversal(root->right);
+		        
+		        //别忘记这一句
+		        return output;
+		        
+		    }
+
+		private:
+		    //这里类内成员的作用和在递归函数中搞一个 传址 类型的参数是一样的。
+		    vector<int> output;
+		};
+
 2. 通用迭代
+
+		class Solution {
+		public:
+		    vector<int> preorderTraversal(TreeNode *root) {
+
+		        vector<int> output;
+		        if(!root){
+		            return output;
+		        }
+		        
+		        /*
+		        path的push就代表前进
+		        path的pop就代表回退
+		        */
+		        stack<TreeNode*> path;
+		        
+		        path.push(root);
+		        
+		        TreeNode* curNode;
+		        TreeNode* lastPopedNode;
+		        
+		        while(!path.empty()){
+		            curNode = path.top();
+		            
+		            //#1 如果是一个叶子节点，必须要pop
+		            if(!curNode->left && !curNode->right){
+		                output.push_back(curNode->val);
+		                lastPopedNode = path.top();
+		                path.pop();
+		                continue;
+		            }
+		            
+		            /*
+		            #2 如果是从左边回溯回来的，就要在回退的过程中看看右边有没有路
+		            1. 右边有路
+		                往右走
+		            2. 右边没有路
+		                继续回退
+		            */
+		            
+		            if(lastPopedNode == curNode->left){
+		                if(curNode->right){
+		                    path.push(curNode->right);
+		                }else{
+		                    lastPopedNode = path.top();
+		                    path.pop();
+		                }
+		                continue;
+		            }
+		            
+		            //#3 如果从右边回退回来的， 直接继续回退
+		            if(lastPopedNode == curNode->right){
+		                lastPopedNode = path.top();
+		                path.pop();
+		                continue;
+		            }
+		            
+		            
+		            //***运行到这里,说明不是回退阶段，要继续探路***
+		            
+		            //#4 如果左边有路， 直接往里走, 同时将当前节点输出
+		            if(curNode->left){
+		                output.push_back(curNode->val);
+		                path.push(curNode->left);
+		                continue;
+		            }
+		            
+		            //运行到这里，说明左边没有路
+		            //#5 如果右边有路，继续往右走
+		            if(curNode->right){
+		                output.push_back(curNode->val);
+		                path.push(curNode->right);
+		                continue;
+		            }
+		            
+		            // {1,2,3} 分别在 #4 #1 #1 中输出
+		            // {1,2,3,4,#,#,5} 1 2 4 3 5 分别在 #4 #4 #1 #5 # # #1 中输出
+		            
+		        }//while
+		        
+		    }//function
+		        
+		};
+
 3. 常见迭代
 
 
 ##Binary Tree Inorder Traversal
 1. 递归
+	
+	参考 Preorder
+
 2. 通用迭代
 3. 常见迭代
     
 ##Search Insert Position    
-1. 暴力 线性遍历， 能 Accepted
+1.  暴力 线性遍历， 能 Accepted
+
 2.  二分查找
 
         int searchInsert(int A[], int n, int target) {
@@ -186,22 +300,69 @@
 
 
 ##Populating Next Right Pointers in Each Node
+每一个node都多了一个 right 域， 任务就是给这个域赋值。
+
 BFS
+
 遍历的时候要使用两个queue， 有点 swap buffer 的感觉。
 
 ##Remove Duplicates from Sorted List
-遍历即可
+遍历即可，遇到相同的无视即可。
 
 ##Roman to Integer
 
 
 ##Climbing Stairs
-很典型的DP问题
-1. 比较普通的是使用一个矩阵的空间
-2. 可以使用一个数组，逐行移动
+
+其实就是一个斐波那契数的问题， 显然使用一维DP要比直接递归好， 直接递归是不行的会 TLE.
+
+具体又能够分成两种
+
+1. 	自底向上法
+
+		class Solution {
+		public:
+		    int climbStairs(int n) {
+		        //dp 递推公式 dp[i] = dp[i-1] + dp[i-2];
+		        int* dp = new int[n+1];
+		        dp[0] = 1; //注意这里是1， 不是0， 要保证 dp[2]=2
+		        dp[1] = 1;
+		        for(int i=2;i<=n;i++){
+		            dp[i] = dp[i-1] + dp[i-2];
+		        }
+		        return dp[n];
+		        
+		    }
+		};
+
+2. 	自顶向下，带备忘机制的递归法
+
+		class Solution {
+		public:
+		    //使用一个map去记录，避免重复计算
+		    int climbStairs(int n) {
+
+		        
+		        if(n<0){
+		            return 0;
+		        }else if(n==0){
+		            return 1;
+		        }else if(map.size()>n && map[n]!=-1){ //the result already exists
+		            return map[n];
+		        }else{
+		            map.resize(n+1,-1);
+		            map[n] = climbStairs(n-1)+climbStairs(n-2); //last step is 1 or 2
+		            return map[n];
+		        }
+		    }
+
+		private:
+		    vector<int> map;
+		};
+
 
 ##Single Number II    
-同 Single Number I
+见 Single Number I
 
 ##Maximum Subarray    
 最大子串问题 DP
@@ -211,10 +372,10 @@ BFS
 可以这样转化成问题（记为问题Q）：
 求解，结束位置固定在最后一个元素的最大子串和。 满足最优子结构和子问题重叠的性质？
 
-用一个数组 dp[i]表示结束位置是i的子串的最大和。
+用一个数组 until[i]表示结束位置是i的子串的最大和。
 于是有递推公式：
 
-    dp[i+1] = max(dp[i]+A[i],A[i])
+    until[i+1] = max(until[i]+A[i],A[i])
 
 这里面一定包含有A的最大子串和。
 

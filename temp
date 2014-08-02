@@ -1,0 +1,113 @@
+//递归
+
+如果一个二叉树只有一边， 遍历二叉树就变成了遍历链表
+
+
+int pow(x,n){
+	//递归出口
+	if(n==0) return 1;
+
+	if(n&1==0){ //偶数
+		return pow(x*x,n/2);	
+	}else{
+		return x*pow(x*x,(n-1)/2);
+	}
+}
+
+
+
+
+
+
+//迭代版本 ， 使用栈
+int pow(x,n){
+	stack<int> re; //stack里面保存着每次除法的余数
+	while(n!=0){
+		if(n&1==0){
+			re.push_back(0);
+		}else{
+			re.push_back(1);
+		}
+
+		n = n/2;
+	}
+
+	/*
+	如果是 pow(x，5)
+
+
+	stack里面的是：
+	从 5得到0 一共经历了三步（包括5四个结果）：
+	1
+	0
+	1
+	*/
+
+	int res = 1; //注意要从1开始， 因为上一步的时候n是最后除到0的， 也就是x的0次方
+	/*如果上一步n除到1（这是必然的，因为n最后必然等于0， 0之前一步必然是1） 就可以令res等于x
+	那时候的stack里面应该是这样：
+	0
+	1
+	同样可以得到结果
+	*/
+
+	while(!re.empty()){
+		int r = re.top();
+		re.pop();
+		if(r){
+			res = res*res*x;
+		}else{
+			res = res*res;
+		}
+
+	}
+
+	return res;
+
+}
+
+
+/*
+x/y = N
+
+目的就是找到一个数N
+使得:
+y*(N+1) > x
+y*N     <=  x
+
+于是可以看出和 pow差不多
+可以化成子问题
+y*N = (2*y)*(N/2) 如果N是偶数
+	= (2*y)*(N/2)+y 如果N是奇数
+关键是怎么知道N是偶数还是奇数呢？
+难道两个都要试一试？ 复杂度貌似是 N， 而且关键的是N从哪来！！ 又不是要求用加法计算 y*N
+
+
+*/
+int divideTwoIntegers(){
+	
+}
+
+//已知除数比N大，往后找
+int multi(const int y,const int x，int N){
+	int temp = y*N;
+	int add = y;
+
+	//得寸进尺地增加y， 直到超出x
+	while(temp<=x){
+		add = add*2;
+		temp += add;
+
+		N *= 2;
+	}
+
+
+	if((temp-y)<x){ //N就是结果
+		return N;
+	}else{ //N偏大了 , 从last_N开始找
+		int last_N = N/2;
+		return multi(y,x,last_N);
+	}
+
+}
+
