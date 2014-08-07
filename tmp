@@ -1,0 +1,151 @@
+Reverse Words in a String	2014-03-05	14.0%
+Evaluate Reverse Polish Notation	2013-11-27	19.7%
+Max Points on a Line	2013-11-22	10.8%
+Sort List	2013-11-16	20.4%
+Insertion Sort List	2013-11-12	25.2%
+LRU Cache	2013-11-09	13.5%
+Binary Tree Postorder Traversal	2013-11-07	30.9%
+Binary Tree Preorder Traversal	2013-11-05	35.5%
+Reorder List	2013-11-02	20.2%
+Linked List Cycle II	2013-10-30	30.7%
+Linked List Cycle	2013-10-28	35.6%
+Word Break II	2013-10-05	16.1%
+Word Break	2013-10-04	20.7%
+Copy List with Random Pointer	2013-10-03	22.9%
+Single Number II	2013-10-02	33.5%
+Single Number	2013-10-01	45.5%
+Candy	2013-09-30	18.5%
+Gas Station	2013-09-28	24.9%
+Clone Graph	2013-09-24	22.4%
+Palindrome Partitioning II	2013-02-28	17.9%
+Palindrome Partitioning	2013-02-27	25.8%
+Surrounded Regions	2013-02-21	13.8%
+Sum Root to Leaf Numbers	2013-02-18	29.5%
+Longest Consecutive Sequence	2013-02-13	27.8%
+Word Ladder II	2013-02-10	11.1%
+Word Ladder	2013-02-10	18.1%
+Valid Palindrome	2013-01-12	22.6%
+Binary Tree Maximum Path Sum	2012-11-07	19.9%
+Best Time to Buy and Sell Stock III	2012-11-06	22.2%
+Best Time to Buy and Sell Stock II	2012-10-30	36.7%
+Best Time to Buy and Sell Stock	2012-10-30	31.1%
+Triangle	2012-10-29	26.6%
+Pascal's Triangle II	2012-10-28	30.4%
+Pascal's Triangle	2012-10-28	31.7%
+Populating Next Right Pointers in Each Node II	2012-10-28	30.1%
+Populating Next Right Pointers in Each Node	2012-10-28	35.2%
+Distinct Subsequences	2012-10-18	24.6%
+Flatten Binary Tree to Linked List	2012-10-14	27.8%
+Path Sum II	2012-10-14	27.1%
+Path Sum	2012-10-13	30.5%
+Minimum Depth of Binary Tree	2012-10-09	29.5%
+Balanced Binary Tree	2012-10-08	32.5%
+Convert Sorted List to Binary Search Tree	2012-10-02	27.1%
+Convert Sorted Array to Binary Search Tree	2012-10-02	32.4%
+Binary Tree Level Order Traversal II	2012-10-01	31.0%
+Construct Binary Tree from Inorder and Postorder Traversal	2012-09-30	26.3%
+Construct Binary Tree from Preorder and Inorder Traversal	2012-09-30	26.3%
+Maximum Depth of Binary Tree	2012-09-29	43.6%
+Binary Tree Zigzag Level Order Traversal	2012-09-28	26.6%
+Binary Tree Level Order Traversal	2012-09-28	30.7%
+Symmetric Tree	2012-09-23	32.0%
+Same Tree	2012-09-03	42.0%
+Recover Binary Search Tree	2012-09-01	23.3%
+Validate Binary Search Tree	2012-08-31	25.7%
+Interleaving String	2012-08-30	19.0%
+Unique Binary Search Trees II	2012-08-27	26.9%
+Unique Binary Search Trees	2012-08-27	36.2%
+Binary Tree Inorder Traversal	2012-08-27	35.4%
+Restore IP Addresses	2012-08-07	20.4%
+Reverse Linked List II	2012-06-27	25.8%
+Subsets II	2012-06-25	26.7%
+Decode Ways	2012-06-25	15.9%
+Gray Code	2012-05-20	31.9%
+Merge Sorted Array	2012-05-20	31.9%
+Scramble String	2012-04-30	22.5%
+Partition List	2012-04-30	26.5%
+Maximal Rectangle	2012-04-23	21.8%
+Largest Rectangle in Histogram	2012-04-22	21.0%
+Remove Duplicates from Sorted List II	2012-04-22	24.7%
+Remove Duplicates from Sorted List	2012-04-22	34.7%
+Search in Rotated Sorted Array II	2012-04-19	30.5%
+Remove Duplicates from Sorted Array II	2012-04-19	30.4%
+Word Search	2012-04-18	19.7%
+Subsets	2012-04-18	27.7%
+Combinations	2012-04-18	30.2%
+Minimum Window Substring	2012-04-15	17.9%
+Sort Colors	2012-04-08	31.7%
+Search a 2D Matrix	2012-04-06	31.1%
+Set Matrix Zeroes	2012-04-05	30.6%
+Edit Distance	2012-04-04	25.2%
+Simplify Path	2012-04-03	19.7%
+Climbing Stairs	2012-04-03	33.5%
+Sqrt(x)	2012-04-03	22.1%
+Text Justification	2012-04-03	14.0%
+Plus One	2012-04-02	31.3%
+Valid Number	2012-04-02	10.9%
+Add Binary	2012-04-02	25.7%
+Merge Two Sorted Lists	2012-03-30	33.0%
+Minimum Path Sum	2012-03-28	31.1%
+Unique Paths II	2012-03-28	27.8%
+Unique Paths	2012-03-28	31.2%
+Rotate List	2012-03-27	21.9%
+Permutation Sequence	2012-03-27	21.9%
+Spiral Matrix II	2012-03-27	30.7%
+Length of Last Word	2012-03-27	29.1%
+Insert Interval	2012-03-27	20.2%
+Merge Intervals	2012-03-26	20.6%
+Jump Game	2012-03-24	27.2%
+Spiral Matrix	2012-03-24	20.6%
+Maximum Subarray	2012-03-21	33.5%
+N-Queens II	2012-03-20	32.8%
+N-Queens	2012-03-19	25.8%
+Pow(x, n)	2012-03-19	26.0%
+Anagrams	2012-03-19	23.4%
+Rotate Image	2012-03-17	31.3%
+Permutations II	2012-03-16	24.7%
+Permutations	2012-03-16	31.1%
+Jump Game II	2012-03-16	24.4%
+Wildcard Matching	2012-03-15	13.6%
+Multiply Strings	2012-03-12	20.4%
+Trapping Rain Water	2012-03-10	28.6%
+First Missing Positive	2012-03-08	22.3%
+Combination Sum II	2012-03-06	24.3%
+Combination Sum	2012-03-06	26.5%
+Count and Say	2012-03-05	26.9%
+Sudoku Solver	2012-03-04	20.9%
+Valid Sudoku	2012-03-03	27.8%
+Search Insert Position	2012-03-03	35.0%
+Search for a Range	2012-03-02	27.2%
+Search in Rotated Sorted Array	2012-03-02	28.5%
+Longest Valid Parentheses	2012-02-29	19.3%
+Next Permutation	2012-02-25	25.4%
+Substring with Concatenation of All Words	2012-02-23	17.9%
+Divide Two Integers	2012-02-18	16.2%
+Implement strStr()	2012-02-18	21.7%
+Remove Element	2012-02-16	33.1%
+Remove Duplicates from Sorted Array	2012-02-16	32.0%
+Reverse Nodes in k-Group	2012-02-15	24.9%
+Swap Nodes in Pairs	2012-02-14	32.3%
+Merge k Sorted Lists	2012-02-13	21.9%
+Generate Parentheses	2012-02-12	31.3%
+Valid Parentheses	2012-01-30	28.1%
+Remove Nth Node From End of List	2012-01-27	29.7%
+4Sum	2012-01-26	21.4%
+Letter Combinations of a Phone Number	2012-01-26	26.2%
+3Sum Closest	2012-01-18	26.9%
+3Sum	2012-01-17	16.5%
+Longest Common Prefix	2012-01-17	27.3%
+Roman to Integer	2012-01-15	33.5%
+Integer to Roman	2012-01-15	33.2%
+Container With Most Water	2012-01-08	30.8%
+Regular Expression Matching	2012-01-08	19.9%
+Palindrome Number	2012-01-04	29.2%
+String to Integer (atoi)	2011-12-26	14.5%
+Reverse Integer	2011-12-25	40.1%
+ZigZag Conversion	2011-12-05	23.7%
+Longest Palindromic Substring	2011-11-11	20.5%
+Add Two Numbers	2011-11-01	22.8%
+Longest Substring Without Repeating Characters	2011-05-15	22.0%
+Median of Two Sorted Arrays	2011-03-27	17.1%
+Two Sum	2011-03-13	18.3%
